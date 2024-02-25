@@ -34,9 +34,55 @@ Tests? No tests for this project.
 # `play_hangman` is the main function, the function
 # that will orchestrate all the helper functions
 # you define, above.
-def play_hangman():
-    pass
+def hangman(again = False):
+  if again:
+    replay = input("Do you want to play again? (y/n)")
+    if replay == 'n':
+      return
+  else:
+    print(BANNER)
+  word = input("Enter the word:")
+  print('\n' * 20)
+  print('_ ' * len(word))
+  letter_list = []
+  letter_wrongs = []
+  tries = 5
+  guess(word, letter_list, letter_wrongs, tries)
 
+def guess(word, letter_list, letter_wrongs, tries):
+    letter = input('Guess a letter:')
+    blank = []
+    if letter in word:
+        letter_list.append(letter)
+        blank = []
+        for eachletter in word:
+            blank.append('_')
+            for correctletters in letter_list:
+                if(eachletter == correctletters):
+                    blank.pop()
+                    blank.append(eachletter)
+        if '_' not in blank:
+            print('You win! :)')
+            return hangman(True)
+        print_data(tries, blank, letter_wrongs)
+        print(f"Correct! {tries} tries left.")
+        guess(word, letter_list, letter_wrongs, tries)
+    else:
+        letter_wrongs.append(letter)
+        tries -= 1
+        if tries == 0:
+            print("You Lost. :(")
+            return hangman(True)
+        print_data(tries, blank, letter_wrongs)
+        print(f"Wrong letter! {tries} tries left.")
+        guess(word, letter_list, letter_wrongs, tries)
+   
+def print_data(tries, blank, letter_wrongs):
+    correct_letters = " ".join(blank)
+    wrong_guesses = " ".join(letter_wrongs)
+    print(HANGMAN_PICS[tries], 
+    f"\nCorrect Guesses: {correct_letters}", 
+    f"\n Incorrect Guesses: {wrong_guesses}")
 
 """
 Don't worry about the code below, and don't change it.
@@ -45,4 +91,4 @@ It's just a way to trigger the `play_hangman` function
 when you run this file from the command line.
 """
 if __name__ == "__main__":
-    play_hangman()
+    hangman()
